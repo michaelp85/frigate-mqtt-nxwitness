@@ -7,7 +7,9 @@ Creates a bookmark in NX Witness whenever a specifed object is detected by Friga
 
 
 1. Install docker and docker-compose
-2. Run with docker-compose :-)
+2. set configuration. nxwitness camera id's are available by right clicking a camera in the tree and select 'camera rules' the search bar will display the currently selected cameras "nxwId" for use in the config json. file.
+3. Run with docker-compose :-)
+
 
 # Configuration
 
