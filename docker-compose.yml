@@ -3,6 +3,6 @@ services:
   frigate-mqtt-nxwitness:
     container_name: frigate-mqtt-nxwitness
     restart: unless-stopped
-    image: martijndierckx/frigate-mqtt-nxwitness
+    image: lazerusrm/frigate-mqtt-nxwitness
     volumes:
-      - /Users/martijn/frigate-mqtt-nxwitness/config:/config
+      - /opt/frigate-mqtt-nxwitness/config:/config

@@ -4,5 +4,5 @@ services:
    build:
      context: .
    volumes:
-     - /Users/martijn/frigate-mqtt-nxwitness/config:/config
+     - /opt/frigate-mqtt-nxwitness/config:/config
    command: npm start
