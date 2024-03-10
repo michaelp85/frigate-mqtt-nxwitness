@@ -1,4 +1,3 @@
-//fs = require('fs');
 const mqtt = require('mqtt');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
@@ -14,8 +13,28 @@ client.on('connect', function () {
     });
 });
 
+// Function to set token
+async function setToken() {
+    try {
+        const authPayload = {
+            username: config.nxwitness.username,
+            password: config.nxwitness.password,
+            setCookie: false
+        };
+        const response = await axios.post(`http://${config.nxwitness.host}:${config.nxwitness.port}/rest/v1/login/sessions`, authPayload, {
+            headers: { accept: "application/json" },
+            responseType: 'json'
+        });
+        const token = response.data.token;
+        return `Bearer ${token}`;
+    } catch (error) {
+        console.error('Error getting token:', error);
+        throw new Error('Failed to authenticate and get token');
+    }
+}
+
 // On receive MQTT message
-client.on('message', function (topic, message) {
+client.on('message', async function (topic, message) {
     try {
         var topicPath = topic.split('/');
 
@@ -47,13 +66,16 @@ client.on('message', function (topic, message) {
                                 tag: 'frigate'
                             };
 
-                            // Send data to NX Witness
+                            // Get bearer token
+                            const bearerToken = await setToken();
+
+                            // Send data to NX Witness with bearer token
                             axios.request({
                                 method: 'get',
                                 url: 'http://'+ config.nxwitness.host +':'+ config.nxwitness.port +'/ec2/bookmarks/add',
-                                auth: {
-                                    username: config.nxwitness.username,
-                                    password: config.nxwitness.password
+                                headers: { 
+                                    Authorization: bearerToken,
+                                    accept: "application/json"
                                 },
                                 responseType: 'json',
                                 params: Object.assign({ format: 'json' }, event)
